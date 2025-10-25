@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Potability Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        /* ========== NAVBAR STYLES (NEW) ========== */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .navbar-menu a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+        
+        .navbar-menu a:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .navbar-menu a.active {
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        /* ======================================== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+      
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .form-card {
+            grid-column: 1;
+        }
+        
+        .accuracy-card {
+            grid-column: 2;
+        }
+        
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .result-card {
+            grid-column: 1 / -1;
+            text-align: center;
+        }
+        
+        .prediction {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .potable {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .not-potable {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .confidence {
+            font-size: 1.3em;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .accuracy-list {
+            list-style: none;
+        }
+        
+        .accuracy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        
+        .accuracy-item:hover {
+            transform: translateX(5px);
+            background: #e9ecef;
+        }
+        
+        .model-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .accuracy-value {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+        
+        .xgboost-highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .xgboost-highlight .model-name,
+        .xgboost-highlight .accuracy-value {
+            color: white;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 968px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-card,
+            .accuracy-card,
+            .result-card {
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💧 Water Potability Prediction System</h1>
+        <!-- ========== NAVBAR ADDED ========== -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">💧 Water Quality Predictor</a>
+            <ul class="navbar-menu">
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/about">About Dataset</a></li>
+            </ul>
+        </div>
+    </nav>
+        
+        <div class="content-wrapper">
+            <!-- Prediction Form -->
+            <div class="card form-card">
+                <h2>Water Quality Parameters</h2>
+                <form method="POST" action="/predict">
+                    <div class="form-group">
+                        <label for="ph">pH Value:</label>
+                        <input type="number" step="0.01" name="ph" id="ph" 
+                               value="{{ input_values.ph if input_values else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Hardness">Hardness (mg/L):</label>
+                        <input type="number" step="0.01" name="Hardness" id="Hardness"
+                               value="{{ input_values.Hardness if input_values else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Solids">Solids (ppm):</label>
+                        <input type="number" step="0.01" name="Solids" id="Solids"
+                               value="{{ input_values.Solids if input_values else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Chloramines">Chloramines (ppm):</label>
+                        <input type="number" step="0.01" name="Chloramines" id="Chloramines"
+                               value="{{ input_values.Chloramines if input_values else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Sulfate">Sulfate (mg/L):</label>
+                        <input type="number" step="0.01" name="Sulfate" id="Sulfate"
+                               value="{{ input_values.Sulfate if input_values else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Conductivity">Conductivity (μS/cm):</label>
+                        <input type="number" step="0.01" name="Conductivity" id="Conductivity"
+                               value="{{ input_values.Conductivity if input_values else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Organic_carbon">Organic Carbon (ppm):</label>
+                        <input type="number" step="0.01" name="Organic_carbon" id="Organic_carbon"
+                               value="{{ input_values.Organic_carbon if input_values else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Trihalomethanes">Trihalomethanes (μg/L):</label>
+                        <input type="number" step="0.01" name="Trihalomethanes" id="Trihalomethanes"
+                               value="{{ input_values.Trihalomethanes if input_values else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="Turbidity">Turbidity (NTU):</label>
+                        <input type="number" step="0.01" name="Turbidity" id="Turbidity"
+                               value="{{ input_values.Turbidity if input_values else '' }}" required>
+                    </div>
+                    
+                    <button type="submit">Predict Water Quality</button>
+                </form>
+            </div>
+            
+            <!-- Model Accuracies
+            <div class="card accuracy-card">
+                <h2>📊 Model Accuracies</h2>
+                <ul class="accuracy-list">
+                    <li class="accuracy-item xgboost-highlight">
+                        <span class="model-name">XGBoost (Active Model)</span>
+                        <span class="accuracy-value">{{ accuracies['XGBoost'] }}%</span>
+                    </li>
+                    <li class="accuracy-item">
+                        <span class="model-name">Random Forest</span>
+                        <span class="accuracy-value">{{ accuracies['Random Forest'] }}%</span>
+                    </li>
+                    <li class="accuracy-item">
+                        <span class="model-name">Decision Tree</span>
+                        <span class="accuracy-value">{{ accuracies['Decision Tree'] }}%</span>
+                    </li>
+                    <li class="accuracy-item">
+                        <span class="model-name">Logistic Regression</span>
+                        <span class="accuracy-value">{{ accuracies['Logistic Regression'] }}%</span>
+                    </li>
+                    <li class="accuracy-item">
+                        <span class="model-name">K-Nearest Neighbors</span>
+                        <span class="accuracy-value">{{ accuracies['K-Nearest Neighbors'] }}%</span>
+                    </li>
+                    <li class="accuracy-item">
+                        <span class="model-name">Support Vector Machine</span>
+                        <span class="accuracy-value">{{ accuracies['Support Vector Machine'] }}%</span>
+                    </li>
+                </ul>
+            </div>
+        </div> -->
+        
+        <!-- Prediction Result -->
+        {% if prediction %}
+        <div class="card result-card">
+            <h2>Prediction Result (XGBoost Model)</h2>
+            <div class="prediction {% if 'Potable' in prediction and 'Not' not in prediction %}potable{% else %}not-potable{% endif %}">
+                {{ prediction }}
+            </div>
+            <div class="confidence">
+                Confidence: {{ confidence }}%
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if error %}
+        <div class="card result-card">
+            <div class="error">{{ error }}</div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

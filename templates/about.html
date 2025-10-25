@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Dataset - Water Potability</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .navbar-menu a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+        
+        .navbar-menu a:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .navbar-menu a.active {
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .intro-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .intro-card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .intro-card p {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        
+        .parameters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .parameter-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+        
+        .parameter-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        
+        .parameter-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .parameter-icon {
+            font-size: 2em;
+        }
+        
+        .parameter-title {
+            font-size: 1.4em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .parameter-content {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .safe-range {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 5px solid #28a745;
+        }
+        
+        .safe-range-title {
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .safe-range-value {
+            color: #155724;
+            font-size: 1em;
+        }
+        
+        .potability-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+        
+        .potability-card .parameter-title {
+            color: white;
+        }
+        
+        .potability-card .parameter-header {
+            border-bottom-color: white;
+        }
+        
+        .potability-card .parameter-content {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.15em;
+        }
+        
+        @media (max-width: 968px) {
+            .parameters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .navbar-menu {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">💧 Water Quality Predictor</a>
+            <ul class="navbar-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about" class="active">About Dataset</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1>📊 About the Water Potability Dataset</h1>
+        
+        <div class="intro-card">
+            <h2>Understanding Water Quality Parameters</h2>
+            <p>
+                Water quality assessment is crucial for ensuring safe drinking water. This prediction system analyzes 
+                nine key water quality parameters to determine if water is safe for human consumption. Each parameter 
+                has specific acceptable ranges defined by the World Health Organization (WHO) and the U.S. Environmental 
+                Protection Agency (EPA). Below are detailed descriptions of each parameter and their safe ranges.
+            </p>
+        </div>
+        
+        <div class="parameters-grid">
+            <!-- pH Value -->
+            <div class="parameter-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">🧪</span>
+                    <span class="parameter-title">1. pH Value</span>
+                </div>
+                <div class="parameter-content">
+                    pH is an important parameter in evaluating the acid–base balance of water. It is the indicator of 
+                    acidic or alkaline condition of water status. Proper pH levels are essential for preventing corrosion 
+                    of water distribution systems and ensuring water doesn't have adverse effects on health.
+                </div>
+                <div class="safe-range">
+                    <div class="safe-range-title">✓ WHO Safe Range:</div>
+                    <div class="safe-range-value">6.5 to 8.5</div>
+                </div>
+            </div>
+            
+            <!-- Hardness -->
+            <div class="parameter-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">🪨</span>
+                    <span class="parameter-title">2. Hardness</span>
+                </div>
+                <div class="parameter-content">
+                    Hardness is mainly caused by calcium and magnesium salts dissolved from geologic deposits through 
+                    which water travels. The length of time water is in contact with hardness-producing material 
+                    determines the hardness level. Originally defined as the capacity of water to precipitate soap.
+                </div>
+                <div class="safe-range">
+                    <div class="safe-range-title">✓ Acceptable Range:</div>
+                    <div class="safe-range-value">Varies by region, typically 50-500 mg/L</div>
+                </div>
+            </div>
+            
+            <!-- Solids (TDS) -->
+            <div class="parameter-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">⚗️</span>
+                    <span class="parameter-title">3. Solids (TDS)</span>
+                </div>
+                <div class="parameter-content">
+                    Total Dissolved Solids (TDS) represents inorganic and organic minerals dissolved in water such as 
+                    potassium, calcium, sodium, bicarbonates, chlorides, magnesium, and sulfates. High TDS indicates 
+                    highly mineralized water and can affect taste and appearance.
+                </div>
+                <div class="safe-range">
+                    <div class="safe-range-title">✓ WHO Recommended Limits:</div>
+                    <div class="safe-range-value">Desirable: 500 mg/L | Maximum: 1000 mg/L</div>
+                </div>
+            </div>
+            
+            <!-- Chloramines -->
+            <div class="parameter-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">🧫</span>
+                    <span class="parameter-title">4. Chloramines</span>
+                </div>
+                <div class="parameter-content">
+                    Chlorine and chloramine are major disinfectants used in public water systems. Chloramines are most 
+                    commonly formed when ammonia is added to chlorine to treat drinking water. They help maintain water 
+                    safety throughout the distribution system.
+                </div>
+                <div class="safe-range">
+                    <div class="safe-range-title">✓ Safe Level:</div>
+                    <div class="safe-range-value">Up to 4 mg/L (or 4 ppm)</div>
+                </div>
+            </div>
+            
+            <!-- Sulfate -->
+            <div class="parameter-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">⚡</span>
+                    <span class="parameter-title">5. Sulfate</span>
+                </div>
+                <div class="parameter-content">
+                    Sulfates are naturally occurring substances found in minerals, soil, and rocks. They are present in 
+                    ambient air, groundwater, plants, and food. The principal commercial use of sulfate is in the 
+                    chemical industry.
+                </div>
+                <div class="safe-range">
+                    <div class="safe-range-title">✓ Typical Range:</div>
+                    <div class="safe-range-value">Freshwater: 3-30 mg/L | High concentrations: up to 1000 mg/L</div>
+                </div>
+            </div>
+            
+            <!-- Conductivity -->
+            <div class="parameter-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">🔌</span>
+                    <span class="parameter-title">6. Conductivity</span>
+                </div>
+                <div class="parameter-content">
+                    Pure water is not a good conductor of electric current but rather a good insulator. Increase in ions 
+                    concentration enhances the electrical conductivity of water. Generally, the amount of dissolved solids 
+                    in water determines the electrical conductivity. EC measures the ionic process of a solution that 
+                    enables it to transmit current.
+                </div>
+                <div class="safe-range">
+                    <div class="safe-range-title">✓ WHO Standard:</div>
+                    <div class="safe-range-value">Should not exceed 400 μS/cm</div>
+                </div>
+            </div>
+            
+            <!-- Organic Carbon -->
+            <div class="parameter-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">🌿</span>
+                    <span class="parameter-title">7. Organic Carbon</span>
+                </div>
+                <div class="parameter-content">
+                    Total Organic Carbon (TOC) in source waters comes from decaying natural organic matter (NOM) as well 
+                    as synthetic sources. TOC is a measure of the total amount of carbon in organic compounds in pure water. 
+                    High TOC levels can indicate contamination or pollution.
+                </div>
+                <div class="safe-range">
+                    <div class="safe-range-title">✓ US EPA Standards:</div>
+                    <div class="safe-range-value">Treated/Drinking Water: < 2 mg/L | Source Water: < 4 mg/L</div>
+                </div>
+            </div>
+            
+            <!-- Trihalomethanes -->
+            <div class="parameter-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">☣️</span>
+                    <span class="parameter-title">8. Trihalomethanes</span>
+                </div>
+                <div class="parameter-content">
+                    THMs are chemicals which may be found in water treated with chlorine. The concentration of THMs in 
+                    drinking water varies according to the level of organic material in the water, the amount of chlorine 
+                    required to treat the water, and the temperature of the water being treated.
+                </div>
+                <div class="safe-range">
+                    <div class="safe-range-title">✓ Safe Level:</div>
+                    <div class="safe-range-value">Up to 80 ppm (parts per million)</div>
+                </div>
+            </div>
+            
+            <!-- Turbidity -->
+            <div class="parameter-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">🌫️</span>
+                    <span class="parameter-title">9. Turbidity</span>
+                </div>
+                <div class="parameter-content">
+                    The turbidity of water depends on the quantity of solid matter present in the suspended state. It is 
+                    a measure of light emitting properties of water and the test is used to indicate the quality of waste 
+                    discharge with respect to colloidal matter. Lower turbidity indicates clearer, safer water.
+                </div>
+                <div class="safe-range">
+                    <div class="safe-range-title">✓ WHO Recommended Value:</div>
+                    <div class="safe-range-value">Should be less than 5.00 NTU (Nephelometric Turbidity Units)</div>
+                </div>
+            </div>
+            
+            <!-- Potability -->
+            <div class="parameter-card potability-card">
+                <div class="parameter-header">
+                    <span class="parameter-icon">✅</span>
+                    <span class="parameter-title">10. Potability (Output)</span>
+                </div>
+                <div class="parameter-content">
+                    <strong>Potability</strong> indicates if water is safe for human consumption. This is the target variable 
+                    that our machine learning model predicts based on the nine input parameters above.
+                    <br><br>
+                    <strong>Output Values:</strong><br>
+                    • <strong>1 (Potable)</strong> = Water is SAFE for human consumption<br>
+                    • <strong>0 (Not Potable)</strong> = Water is UNSAFE for human consumption
+                    <br><br>
+                    Our XGBoost model analyzes all nine water quality parameters simultaneously to determine whether the 
+                    water sample meets safety standards for drinking.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
